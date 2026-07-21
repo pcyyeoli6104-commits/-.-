@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختيار المنتج</title>
+<!-- استدعاء خط Cairo لمطابقة خطوط الواجهات الحديثة[cite: 1] -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --primary-orange: #ff6600; /*[cite: 1] */
+    --primary-orange-hover: #e05a00; /*[cite: 1] */
+    --bg-white: #ffffff; /*[cite: 1] */
+    --text-dark: #222222; /*[cite: 1] */
+    --text-gray: #666666; /*[cite: 1] */
+    --bg-body: #f0f0f2;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Cairo', sans-serif; /*[cite: 1] */
+  }
+
+  body {
+    background-color: var(--bg-body);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 420px;
+    background: var(--bg-white); /*[cite: 1] */
+    border-radius: 16px;
+    padding: 35px 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    text-align: center;
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  h2 {
+    color: var(--text-dark); /*[cite: 1] */
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  p.welcome-text {
+    color: var(--text-gray); /*[cite: 1] */
+    margin-bottom: 30px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  /* تنسيق كروت الاختيارات مع الانيميشن */
+  .option-card {
+    border: 2px solid #eaeaea;
+    border-radius: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: var(--bg-white); /*[cite: 1] */
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(255, 102, 0, 0.12);
+    border-color: rgba(255, 102, 0, 0.4);
+  }
+
+  .option-card.selected {
+    border-color: var(--primary-orange); /*[cite: 1] */
+    background-color: rgba(255, 102, 0, 0.04);
+  }
+
+  .option-card.selected::before {
+    content: '✓';
+    position: absolute;
+    left: 16px;
+    color: var(--primary-orange); /*[cite: 1] */
+    font-size: 20px;
+    font-weight: bold;
+    animation: popIn 0.3s ease;
+  }
+
+  .option-img {
+    width: 65px;
+    height: 65px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1px solid #f0f0f0;
+  }
+
+  .option-title {
+    font-size: 16.5px;
+    font-weight: 600;
+    color: var(--text-dark); /*[cite: 1] */
+  }
+
+  /* زر التأكيد مشابه لتنسيق زر تسجيل الدخول */
+  .btn-submit {
+    width: 100%; /*[cite: 1] */
+    background-color: var(--primary-orange); /*[cite: 1] */
+    color: #ffffff; /*[cite: 1] */
+    border: none; /*[cite: 1] */
+    border-radius: 8px; /*[cite: 1] */
+    padding: 15px 16px; /*[cite: 1] */
+    font-size: 16px; /*[cite: 1] */
+    font-weight: 700; /*[cite: 1] */
+    cursor: pointer; /*[cite: 1] */
+    box-shadow: 0 4px 12px rgba(240, 83, 35, 0.25); /*[cite: 1] */
+    transition: background-color 0.2s, transform 0.2s;
+  }
+
+  .btn-submit:hover {
+    background-color: var(--primary-orange-hover); /*[cite: 1] */
+    transform: scale(1.02);
+  }
+
+  .btn-submit:disabled {
+    background-color: #d4d4d4;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
+  /* واجهة رسالة النجاح */
+  .success-message {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+  }
+
+  /* الحركات (Animations) */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @media (max-width: 480px) {
+    .container {
+      border-radius: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- حاوية اختيار المنتجات -->
+  <div class="container" id="mainContainer">
+    <h2>أهلاً بك </h2>
+    <p class="welcome-text">الرجاء اختيار المنتج المطلوب لإتمام الطلب</p>
+
+    <div class="options-grid">
+      <!-- الخيار الأول -->
+      <div class="option-card" onclick="selectOption(this)">
+        <img src="https://i.imgur.com/9SMDXfH.jpeg" alt="ساعة وبطاقة" class="option-img">
+        <span class="option-title">ساعة وبطاقة</span>
+      </div>
+
+      <!-- الخيار الثاني -->
+      <div class="option-card" onclick="selectOption(this)">
+        <img src="https://i.imgur.com/qJJWLWG.jpeg" alt="ساعة وحدها" class="option-img">
+        <span class="option-title">ساعة </span>
+      </div>
+
+      <!-- الخيار الثالث -->
+      <div class="option-card" onclick="selectOption(this)">
+        <img src="https://i.imgur.com/urxLiCh.jpeg" alt="بطاقة وحدها" class="option-img">
+        <span class="option-title">بطاقة </span>
+      </div>
+    </div>
+
+    <button class="btn-submit" id="submitBtn" disabled onclick="submitOrder()">تأكيد الاختيار</button>
+  </div>
+
+  <!-- واجهة رسالة النجاح (تظهر بعد النقر على تأكيد) -->
+  <div class="container success-message" id="successContainer">
+    <div class="success-icon">✓</div>
+    <h2>تم استلام طلبك بنجاح!</h2>
+    <p class="welcome-text">سيتم التواصل معك قريباً.</p>
+  </div>
+
+<script>
+  let isSelected = false;
+
+  // دالة تحديد الخيار
+  function selectOption(element) {
+    const cards = document.querySelectorAll('.option-card');
+    
+    // إزالة كلاس التحديد من جميع الكروت
+    cards.forEach(card => card.classList.remove('selected'));
+
+    // إضافة كلاس التحديد للكارت الذي تم النقر عليه
+    element.classList.add('selected');
+    
+    // تفعيل زر التأكيد
+    document.getElementById('submitBtn').disabled = false;
+    isSelected = true;
+  }
+
+  // دالة تأكيد الطلب
+  function submitOrder() {
+    if (!isSelected) return;
+
+    // إخفاء صفحة الاختيارات
+    document.getElementById('mainContainer').style.display = 'none';
+    
+    // إظهار رسالة النجاح مع تفعيل الانيميشن
+    const successContainer = document.getElementById('successContainer');
+    successContainer.style.display = 'flex';
+  }
+</script>
+
+</body>
+</html>
