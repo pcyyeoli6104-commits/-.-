@@ -52,11 +52,11 @@
     width: 100%;
     max-width: 420px;
     background: var(--bg-white);
-    min-height: 100vh;
+    height: 100dvh; /* يضمن أخذ طول الشاشة الفعلي للهاتف لمنع السكرول */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    zoom: 0.8;
+    zoom: 0.96; /* تم التكبير بنسبة 20% مقارنة بالـ 0.8 السابقة */
   }
 
   /* الهيدر الأسود - تم تعديله ليغطي اللوقو المساحة كاملة */
@@ -78,6 +78,7 @@
   .main-content {
     padding: 34px 22px 24px;
     flex: 1;
+    overflow-y: auto; /* يبقي الفوتر بالأسفل ويسمح بالتمرير داخل المحتوى فقط إذا لزم الأمر */
   }
 
   /* تنسيق حقول الإدخال بخلفية بيضاء مع خط سفلي غامق فقط */
@@ -224,7 +225,7 @@
   /* الفوتر الرمادي السفلي */
   .footer {
     background-color: var(--footer-bg);
-    padding: 14px 22px;
+    padding: 14px 22px 24px; /* تمت زيادة البادينغ السفلي لرفعه قليلاً عن الشاشة */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -237,11 +238,13 @@
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;
+    margin-bottom: 5px; /* لموازنة الرفع */
   }
 
   .lang-btn {
     position: absolute;
     right: 22px;
+    top: 10px; /* تم تعديل التموضع ليتناسب مع زيادة البادينغ */
     background-color: transparent;
     border: 1px solid #444444;
     border-radius: 6px;
